@@ -1,6 +1,4 @@
 # Hi there! 👋 I'm Nafew Azim
-
-<div align="center">
   
   **Machine Learning Engineer | AI Researcher | Deep Learning Specialist**
 
