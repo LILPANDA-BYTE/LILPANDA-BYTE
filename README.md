@@ -1,4 +1,4 @@
-# 🚀 Hello, Universe! I'm Nafew Azim
+# Hey! I'm Nafew Azim
 
 <div align="center">
   
