@@ -18,37 +18,108 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
         
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
+      - name: Create output directory
+        run: mkdir -p dist
+        
+      - name: Generate GitHub contribution snake
+        uses: Platane/snk@v3
         with:
-          node-version: '18'
-          
-      - name: Generate GitHub Stats
+          github_user_name: ${{ github.repository_owner }}
+          outputs: |
+            dist/github-contribution-grid-snake.svg
+            dist/github-contribution-grid-snake-dark.svg?palette=github-dark
+            dist/github-contribution-grid-snake.gif?color_snake=orange&color_dots=#bfd6f6,#8cc8ff,#64b5f6,#42a5f5,#2196f3
+            
+      - name: Create Interactive Constellation HTML
         run: |
-          mkdir -p dist
-          
-          # Create the constellation animation
           cat > dist/constellation.html << 'EOF'
           <!DOCTYPE html>
           <html>
           <head>
-              <title>Constellation GitHub Activity</title>
+              <title>Constellation GitHub Activity - NAFEW AZIM</title>
+              <meta charset="UTF-8">
+              <meta name="viewport" content="width=device-width, initial-scale=1.0">
               <style>
-                  body { margin: 0; background: #0a0a0a; font-family: Arial, sans-serif; }
+                  body { 
+                      margin: 0; 
+                      background: #0a0a0a; 
+                      font-family: 'Segoe UI', Arial, sans-serif; 
+                      overflow: hidden;
+                  }
                   canvas { display: block; }
-                  .info { position: absolute; top: 20px; left: 20px; color: white; font-size: 18px; z-index: 10; }
-                  .legend { position: absolute; bottom: 20px; right: 20px; color: white; font-size: 12px; z-index: 10; }
+                  .info { 
+                      position: absolute; 
+                      top: 20px; 
+                      left: 20px; 
+                      color: white; 
+                      font-size: 18px; 
+                      z-index: 10; 
+                      text-shadow: 0 0 10px rgba(255,255,255,0.5);
+                      max-width: 400px;
+                  }
+                  .info h2 {
+                      margin: 0 0 10px 0;
+                      font-size: 24px;
+                      background: linear-gradient(45deg, #00d9ff, #ff6b6b, #4ecdc4);
+                      -webkit-background-clip: text;
+                      -webkit-text-fill-color: transparent;
+                      background-clip: text;
+                  }
+                  .legend { 
+                      position: absolute; 
+                      bottom: 20px; 
+                      right: 20px; 
+                      color: white; 
+                      font-size: 12px; 
+                      z-index: 10; 
+                      text-shadow: 0 0 5px rgba(255,255,255,0.3);
+                      background: rgba(0,0,0,0.5);
+                      padding: 15px;
+                      border-radius: 10px;
+                      border: 1px solid rgba(255,255,255,0.2);
+                  }
+                  .controls {
+                      position: absolute;
+                      top: 20px;
+                      right: 20px;
+                      color: white;
+                      z-index: 10;
+                  }
+                  .controls button {
+                      background: rgba(0,217,255,0.2);
+                      border: 1px solid #00d9ff;
+                      color: white;
+                      padding: 8px 15px;
+                      margin: 5px;
+                      border-radius: 5px;
+                      cursor: pointer;
+                      transition: all 0.3s ease;
+                  }
+                  .controls button:hover {
+                      background: rgba(0,217,255,0.4);
+                      box-shadow: 0 0 15px rgba(0,217,255,0.3);
+                  }
               </style>
           </head>
           <body>
               <div class="info">
-                  <h2>🌟 LILPANDA-BYTE - Constellation of Code 🌟</h2>
+                  <h2>🌟 NAFEW AZIM - Constellation of Code 🌟</h2>
                   <p>Each star represents your contributions across the cosmos of development</p>
+                  <p><small>Machine Learning Engineer | AI Researcher | Deep Learning Specialist</small></p>
+              </div>
+              <div class="controls">
+                  <button onclick="toggleShootingStars()">Toggle Shooting Stars</button>
+                  <button onclick="resetAnimation()">Reset View</button>
               </div>
               <div class="legend">
-                  <p>✨ Bright stars = High activity days<br>
-                  🌌 Constellations = Your project ecosystems<br>
-                  🚀 Shooting stars = Recent commits</p>
+                  <p><strong>Constellation Guide:</strong></p>
+                  <p>✨ <span style="color: #4fc3f7;">Blue</span> = Machine Learning<br>
+                  🟣 <span style="color: #ab47bc;">Purple</span> = Deep Learning<br>
+                  🟢 <span style="color: #66bb6a;">Green</span> = Data Science<br>
+                  🟠 <span style="color: #ffa726;">Orange</span> = Python<br>
+                  🔴 <span style="color: #ef5350;">Red</span> = Neural Networks<br>
+                  🔵 <span style="color: #26c6da;">Cyan</span> = Computer Vision<br>
+                  🚀 Shooting stars = Recent activity</p>
               </div>
               <canvas id="constellation"></canvas>
               
@@ -56,177 +127,236 @@ jobs:
                   const canvas = document.getElementById('constellation');
                   const ctx = canvas.getContext('2d');
                   
-                  // Set canvas size
-                  canvas.width = window.innerWidth;
-                  canvas.height = window.innerHeight;
+                  let animationRunning = true;
+                  let shootingStarsEnabled = true;
                   
-                  // Star and constellation data
+                  // Set canvas size
+                  function resizeCanvas() {
+                      canvas.width = window.innerWidth;
+                      canvas.height = window.innerHeight;
+                  }
+                  resizeCanvas();
+                  
+                  // Global arrays
                   const stars = [];
                   const constellations = [];
                   const shootingStars = [];
                   
-                  // Create stars based on contribution pattern
+                  // Create stars based on skill constellations
                   function createStars() {
-                      // Major constellations representing your key skills
+                      stars.length = 0;
+                      constellations.length = 0;
+                      
                       const skillConstellations = [
-                          { name: 'Machine Learning', x: canvas.width * 0.2, y: canvas.height * 0.3, size: 8 },
-                          { name: 'Deep Learning', x: canvas.width * 0.7, y: canvas.height * 0.2, size: 7 },
-                          { name: 'Data Science', x: canvas.width * 0.5, y: canvas.height * 0.5, size: 6 },
-                          { name: 'Python', x: canvas.width * 0.8, y: canvas.height * 0.6, size: 9 },
-                          { name: 'Neural Networks', x: canvas.width * 0.3, y: canvas.height * 0.7, size: 7 },
-                          { name: 'Computer Vision', x: canvas.width * 0.6, y: canvas.height * 0.8, size: 6 }
+                          { name: 'Machine Learning', x: canvas.width * 0.2, y: canvas.height * 0.3, size: 8, color: '#4fc3f7' },
+                          { name: 'Deep Learning', x: canvas.width * 0.75, y: canvas.height * 0.25, size: 7, color: '#ab47bc' },
+                          { name: 'Data Science', x: canvas.width * 0.5, y: canvas.height * 0.5, size: 6, color: '#66bb6a' },
+                          { name: 'Python', x: canvas.width * 0.8, y: canvas.height * 0.65, size: 9, color: '#ffa726' },
+                          { name: 'Neural Networks', x: canvas.width * 0.25, y: canvas.height * 0.75, size: 7, color: '#ef5350' },
+                          { name: 'Computer Vision', x: canvas.width * 0.6, y: canvas.height * 0.8, size: 6, color: '#26c6da' }
                       ];
                       
-                      skillConstellations.forEach((constellation, idx) => {
-                          // Create constellation pattern
+                      skillConstellations.forEach((constellation) => {
                           const starCount = constellation.size;
-                          const angle = (idx * Math.PI * 2) / skillConstellations.length;
                           
                           for (let i = 0; i < starCount; i++) {
-                              const starAngle = (i * Math.PI * 2) / starCount;
-                              const radius = 50 + Math.random() * 100;
+                              const angle = (i * Math.PI * 2) / starCount;
+                              const radius = 40 + Math.random() * 80;
+                              const x = constellation.x + Math.cos(angle) * radius;
+                              const y = constellation.y + Math.sin(angle) * radius;
                               
-                              stars.push({
-                                  x: constellation.x + Math.cos(starAngle) * radius,
-                                  y: constellation.y + Math.sin(starAngle) * radius,
-                                  brightness: 0.3 + Math.random() * 0.7,
-                                  size: 1 + Math.random() * 3,
-                                  twinkle: Math.random() * Math.PI * 2,
-                                  constellation: constellation.name,
-                                  color: `hsl(${200 + idx * 40}, 80%, 70%)`
-                              });
+                              // Ensure stars stay within canvas bounds
+                              if (x > 50 && x < canvas.width - 50 && y > 50 && y < canvas.height - 50) {
+                                  stars.push({
+                                      x: x,
+                                      y: y,
+                                      brightness: 0.4 + Math.random() * 0.6,
+                                      size: 1.5 + Math.random() * 2.5,
+                                      twinkle: Math.random() * Math.PI * 2,
+                                      constellation: constellation.name,
+                                      color: constellation.color,
+                                      baseX: x,
+                                      baseY: y
+                                  });
+                              }
                           }
                           
-                          constellations.push({
-                              name: constellation.name,
-                              x: constellation.x,
-                              y: constellation.y,
-                              alpha: 0.7
-                          });
+                          constellations.push(constellation);
                       });
                       
-                      // Add random background stars
-                      for (let i = 0; i < 200; i++) {
+                      // Add background stars
+                      for (let i = 0; i < 150; i++) {
                           stars.push({
                               x: Math.random() * canvas.width,
                               y: Math.random() * canvas.height,
-                              brightness: 0.1 + Math.random() * 0.4,
-                              size: 0.5 + Math.random() * 1.5,
+                              brightness: 0.1 + Math.random() * 0.3,
+                              size: 0.5 + Math.random() * 1,
                               twinkle: Math.random() * Math.PI * 2,
                               constellation: 'background',
-                              color: '#ffffff'
+                              color: '#ffffff',
+                              baseX: 0,
+                              baseY: 0
                           });
                       }
                   }
                   
-                  // Create shooting stars (recent activity)
                   function createShootingStar() {
+                      if (!shootingStarsEnabled) return;
+                      
+                      const colors = ['#ffff00', '#ff6b6b', '#4ecdc4', '#45b7d1', '#f9ca24', '#00d9ff'];
                       shootingStars.push({
                           x: -50,
                           y: Math.random() * canvas.height,
-                          speed: 3 + Math.random() * 5,
-                          length: 20 + Math.random() * 80,
+                          speed: 4 + Math.random() * 6,
+                          length: 30 + Math.random() * 70,
                           alpha: 1,
-                          color: `hsl(${Math.random() * 360}, 100%, 80%)`
+                          color: colors[Math.floor(Math.random() * colors.length)]
                       });
                   }
                   
-                  // Animation loop
                   function animate() {
-                      // Clear canvas with space background
-                      const gradient = ctx.createRadialGradient(canvas.width/2, canvas.height/2, 0, canvas.width/2, canvas.height/2, canvas.width);
+                      if (!animationRunning) return;
+                      
+                      // Space background gradient
+                      const gradient = ctx.createRadialGradient(
+                          canvas.width/2, canvas.height/2, 0, 
+                          canvas.width/2, canvas.height/2, Math.max(canvas.width, canvas.height)
+                      );
                       gradient.addColorStop(0, '#0a0a2e');
                       gradient.addColorStop(0.5, '#16213e');
                       gradient.addColorStop(1, '#0a0a0a');
                       ctx.fillStyle = gradient;
                       ctx.fillRect(0, 0, canvas.width, canvas.height);
                       
-                      // Draw constellation lines
-                      ctx.strokeStyle = 'rgba(100, 150, 200, 0.3)';
-                      ctx.lineWidth = 1;
+                      // Draw constellation connections
                       constellations.forEach(constellation => {
                           const constellationStars = stars.filter(star => star.constellation === constellation.name);
-                          ctx.beginPath();
-                          constellationStars.forEach((star, idx) => {
-                              if (idx === 0) {
-                                  ctx.moveTo(star.x, star.y);
-                              } else {
-                                  ctx.lineTo(star.x, star.y);
-                              }
-                          });
-                          ctx.stroke();
+                          if (constellationStars.length > 2) {
+                              ctx.strokeStyle = constellation.color + '40'; // Add transparency
+                              ctx.lineWidth = 1;
+                              ctx.beginPath();
+                              
+                              constellationStars.forEach((star, idx) => {
+                                  if (idx === 0) {
+                                      ctx.moveTo(star.x, star.y);
+                                  } else {
+                                      ctx.lineTo(star.x, star.y);
+                                  }
+                              });
+                              ctx.closePath();
+                              ctx.stroke();
+                          }
                       });
                       
-                      // Draw stars
+                      // Draw stars with improved rendering
                       stars.forEach(star => {
-                          const twinkle = Math.sin(star.twinkle + Date.now() * 0.003) * 0.3 + 0.7;
+                          const time = Date.now() * 0.002;
+                          const twinkle = Math.sin(star.twinkle + time) * 0.3 + 0.7;
                           const alpha = star.brightness * twinkle;
                           
-                          // Star glow
-                          const gradient = ctx.createRadialGradient(star.x, star.y, 0, star.x, star.y, star.size * 3);
-                          gradient.addColorStop(0, star.color.replace(')', `, ${alpha})`).replace('hsl', 'hsla'));
-                          gradient.addColorStop(1, star.color.replace(')', `, 0)`).replace('hsl', 'hsla'));
+                          // Convert hex to rgba
+                          const hexToRgba = (hex, alpha) => {
+                              const r = parseInt(hex.slice(1, 3), 16);
+                              const g = parseInt(hex.slice(3, 5), 16);
+                              const b = parseInt(hex.slice(5, 7), 16);
+                              return `rgba(${r}, ${g}, ${b}, ${alpha})`;
+                          };
                           
-                          ctx.fillStyle = gradient;
+                          // Star glow
+                          const glowGradient = ctx.createRadialGradient(star.x, star.y, 0, star.x, star.y, star.size * 4);
+                          glowGradient.addColorStop(0, hexToRgba(star.color, alpha * 0.8));
+                          glowGradient.addColorStop(1, hexToRgba(star.color, 0));
+                          
+                          ctx.fillStyle = glowGradient;
                           ctx.beginPath();
-                          ctx.arc(star.x, star.y, star.size * 3, 0, Math.PI * 2);
+                          ctx.arc(star.x, star.y, star.size * 4, 0, Math.PI * 2);
                           ctx.fill();
                           
                           // Star core
-                          ctx.fillStyle = star.color.replace(')', `, ${alpha})`).replace('hsl', 'hsla');
+                          ctx.fillStyle = hexToRgba(star.color, alpha);
                           ctx.beginPath();
                           ctx.arc(star.x, star.y, star.size, 0, Math.PI * 2);
                           ctx.fill();
                           
-                          star.twinkle += 0.02;
+                          star.twinkle += 0.03;
                       });
                       
                       // Draw constellation labels
-                      ctx.fillStyle = 'rgba(255, 255, 255, 0.8)';
-                      ctx.font = '14px Arial';
+                      ctx.font = 'bold 16px Segoe UI, Arial';
                       ctx.textAlign = 'center';
+                      ctx.textBaseline = 'middle';
+                      
                       constellations.forEach(constellation => {
-                          ctx.fillText(constellation.name, constellation.x, constellation.y - 70);
+                          // Text shadow
+                          ctx.shadowColor = constellation.color;
+                          ctx.shadowBlur = 15;
+                          ctx.fillStyle = 'rgba(255, 255, 255, 0.9)';
+                          ctx.fillText(constellation.name, constellation.x, constellation.y - 80);
+                          ctx.shadowBlur = 0;
                       });
                       
-                      // Draw and update shooting stars
-                      shootingStars.forEach((star, idx) => {
-                          // Draw trail
-                          const gradient = ctx.createLinearGradient(star.x - star.length, star.y, star.x, star.y);
-                          gradient.addColorStop(0, star.color.replace(')', `, 0)`).replace('hsl', 'hsla'));
-                          gradient.addColorStop(1, star.color.replace(')', `, ${star.alpha})`).replace('hsl', 'hsla'));
+                      // Handle shooting stars
+                      for (let i = shootingStars.length - 1; i >= 0; i--) {
+                          const star = shootingStars[i];
                           
-                          ctx.strokeStyle = gradient;
-                          ctx.lineWidth = 2;
+                          // Draw trail
+                          const trailGradient = ctx.createLinearGradient(
+                              star.x - star.length, star.y, star.x, star.y
+                          );
+                          trailGradient.addColorStop(0, star.color + '00');
+                          trailGradient.addColorStop(1, star.color + Math.floor(star.alpha * 255).toString(16).padStart(2, '0'));
+                          
+                          ctx.strokeStyle = trailGradient;
+                          ctx.lineWidth = 3;
                           ctx.beginPath();
                           ctx.moveTo(star.x - star.length, star.y);
                           ctx.lineTo(star.x, star.y);
                           ctx.stroke();
                           
+                          // Star head with glow
+                          const headGradient = ctx.createRadialGradient(star.x, star.y, 0, star.x, star.y, 6);
+                          headGradient.addColorStop(0, star.color + Math.floor(star.alpha * 255).toString(16).padStart(2, '0'));
+                          headGradient.addColorStop(1, star.color + '00');
+                          
+                          ctx.fillStyle = headGradient;
+                          ctx.beginPath();
+                          ctx.arc(star.x, star.y, 6, 0, Math.PI * 2);
+                          ctx.fill();
+                          
                           // Update position
                           star.x += star.speed;
-                          star.alpha -= 0.01;
+                          star.alpha -= 0.008;
                           
                           // Remove if off screen or faded
                           if (star.x > canvas.width + 100 || star.alpha <= 0) {
-                              shootingStars.splice(idx, 1);
+                              shootingStars.splice(i, 1);
                           }
-                      });
+                      }
                       
-                      // Randomly create shooting stars
-                      if (Math.random() < 0.02) {
+                      // Create new shooting stars randomly
+                      if (Math.random() < 0.02 && shootingStarsEnabled) {
                           createShootingStar();
                       }
                       
                       requestAnimationFrame(animate);
                   }
                   
-                  // Handle window resize
+                  // Control functions
+                  function toggleShootingStars() {
+                      shootingStarsEnabled = !shootingStarsEnabled;
+                      if (!shootingStarsEnabled) {
+                          shootingStars.length = 0;
+                      }
+                  }
+                  
+                  function resetAnimation() {
+                      shootingStars.length = 0;
+                      createStars();
+                  }
+                  
+                  // Event listeners
                   window.addEventListener('resize', () => {
-                      canvas.width = window.innerWidth;
-                      canvas.height = window.innerHeight;
-                      stars.length = 0;
-                      constellations.length = 0;
+                      resizeCanvas();
                       createStars();
                   });
                   
@@ -238,7 +368,7 @@ jobs:
           </html>
           EOF
 
-      - name: Create Static SVG Version
+      - name: Create Static SVG Constellation
         run: |
           cat > dist/constellation-static.svg << 'EOF'
           <svg width="800" height="400" xmlns="http://www.w3.org/2000/svg">
@@ -267,11 +397,9 @@ jobs:
             <!-- Space Background -->
             <rect width="800" height="400" fill="url(#spaceGradient)"/>
             
-            <!-- Machine Learning Constellation -->
-            <g id="ml-constellation">
-              <text x="160" y="100" fill="rgba(255,255,255,0.8)" font-family="Arial" font-size="12" text-anchor="middle" filter="url(#textGlow)">Machine Learning</text>
-              
-              <!-- ML Stars -->
+            <!-- Machine Learning Constellation (Blue) -->
+            <g>
+              <text x="160" y="100" fill="white" font-family="Arial" font-size="14" text-anchor="middle" filter="url(#textGlow)">Machine Learning</text>
               <circle cx="140" cy="120" r="3" fill="#4fc3f7" filter="url(#starGlow)">
                 <animate attributeName="opacity" values="0.5;1;0.5" dur="3s" repeatCount="indefinite"/>
               </circle>
@@ -284,178 +412,4 @@ jobs:
               <circle cx="120" cy="135" r="2.8" fill="#0288d1" filter="url(#starGlow)">
                 <animate attributeName="opacity" values="0.7;1;0.7" dur="3.5s" repeatCount="indefinite" begin="1.5s"/>
               </circle>
-              
-              <!-- Constellation lines -->
-              <path d="M 140,120 L 180,115 L 160,140 L 120,135 Z" stroke="rgba(79,195,247,0.4)" stroke-width="1" fill="none">
-                <animate attributeName="opacity" values="0.2;0.6;0.2" dur="5s" repeatCount="indefinite"/>
-              </path>
-            </g>
-            
-            <!-- Deep Learning Constellation -->
-            <g id="dl-constellation">
-              <text x="560" y="80" fill="rgba(255,255,255,0.8)" font-family="Arial" font-size="12" text-anchor="middle" filter="url(#textGlow)">Deep Learning</text>
-              
-              <circle cx="540" cy="100" r="3.5" fill="#ab47bc" filter="url(#starGlow)">
-                <animate attributeName="opacity" values="0.6;1;0.6" dur="2.8s" repeatCount="indefinite"/>
-              </circle>
-              <circle cx="580" cy="95" r="2.2" fill="#8e24aa" filter="url(#starGlow)">
-                <animate attributeName="opacity" values="0.5;0.9;0.5" dur="3.2s" repeatCount="indefinite" begin="0.8s"/>
-              </circle>
-              <circle cx="560" cy="120" r="2.6" fill="#7b1fa2" filter="url(#starGlow)">
-                <animate attributeName="opacity" values="0.4;1;0.4" dur="2.5s" repeatCount="indefinite" begin="1.2s"/>
-              </circle>
-              
-              <path d="M 540,100 L 580,95 L 560,120 Z" stroke="rgba(171,71,188,0.4)" stroke-width="1" fill="none">
-                <animate attributeName="opacity" values="0.3;0.7;0.3" dur="4s" repeatCount="indefinite"/>
-              </path>
-            </g>
-            
-            <!-- Data Science Constellation -->
-            <g id="ds-constellation">
-              <text x="400" y="180" fill="rgba(255,255,255,0.8)" font-family="Arial" font-size="12" text-anchor="middle" filter="url(#textGlow)">Data Science</text>
-              
-              <circle cx="380" cy="200" r="2.8" fill="#66bb6a" filter="url(#starGlow)">
-                <animate attributeName="opacity" values="0.5;1;0.5" dur="3.5s" repeatCount="indefinite"/>
-              </circle>
-              <circle cx="420" cy="195" r="3.2" fill="#43a047" filter="url(#starGlow)">
-                <animate attributeName="opacity" values="0.6;0.9;0.6" dur="2.2s" repeatCount="indefinite" begin="0.7s"/>
-              </circle>
-              <circle cx="400" cy="220" r="2.4" fill="#388e3c" filter="url(#starGlow)">
-                <animate attributeName="opacity" values="0.4;0.8;0.4" dur="4.2s" repeatCount="indefinite" begin="1.4s"/>
-              </circle>
-              <circle cx="390" cy="180" r="2" fill="#2e7d32" filter="url(#starGlow)">
-                <animate attributeName="opacity" values="0.3;0.7;0.3" dur="3.8s" repeatCount="indefinite" begin="2s"/>
-              </circle>
-              
-              <path d="M 380,200 L 420,195 L 400,220 L 390,180 Z" stroke="rgba(102,187,106,0.4)" stroke-width="1" fill="none">
-                <animate attributeName="opacity" values="0.2;0.5;0.2" dur="6s" repeatCount="indefinite"/>
-              </path>
-            </g>
-            
-            <!-- Python Constellation -->
-            <g id="python-constellation">
-              <text x="640" y="240" fill="rgba(255,255,255,0.8)" font-family="Arial" font-size="12" text-anchor="middle" filter="url(#textGlow)">Python</text>
-              
-              <circle cx="620" cy="260" r="3.8" fill="#ffa726" filter="url(#starGlow)">
-                <animate attributeName="opacity" values="0.7;1;0.7" dur="2.5s" repeatCount="indefinite"/>
-              </circle>
-              <circle cx="660" cy="255" r="3" fill="#ff9800" filter="url(#starGlow)">
-                <animate attributeName="opacity" values="0.5;0.9;0.5" dur="3s" repeatCount="indefinite" begin="0.5s"/>
-              </circle>
-              <circle cx="640" cy="280" r="2.5" fill="#f57c00" filter="url(#starGlow)">
-                <animate attributeName="opacity" values="0.6;0.8;0.6" dur="3.8s" repeatCount="indefinite" begin="1s"/>
-              </circle>
-              <circle cx="630" cy="240" r="2.2" fill="#ef6c00" filter="url(#starGlow)">
-                <animate attributeName="opacity" values="0.4;0.9;0.4" dur="2.8s" repeatCount="indefinite" begin="1.5s"/>
-              </circle>
-              <circle cx="650" cy="270" r="2.8" fill="#e65100" filter="url(#starGlow)">
-                <animate attributeName="opacity" values="0.5;1;0.5" dur="3.2s" repeatCount="indefinite" begin="2s"/>
-              </circle>
-              
-              <path d="M 620,260 L 660,255 L 650,270 L 640,280 L 630,240 Z" stroke="rgba(255,167,38,0.4)" stroke-width="1" fill="none">
-                <animate attributeName="opacity" values="0.3;0.6;0.3" dur="5s" repeatCount="indefinite"/>
-              </path>
-            </g>
-            
-            <!-- Neural Networks Constellation -->
-            <g id="nn-constellation">
-              <text x="240" y="280" fill="rgba(255,255,255,0.8)" font-family="Arial" font-size="12" text-anchor="middle" filter="url(#textGlow)">Neural Networks</text>
-              
-              <circle cx="220" cy="300" r="2.5" fill="#ef5350" filter="url(#starGlow)">
-                <animate attributeName="opacity" values="0.6;1;0.6" dur="2.8s" repeatCount="indefinite"/>
-              </circle>
-              <circle cx="260" cy="295" r="3" fill="#f44336" filter="url(#starGlow)">
-                <animate attributeName="opacity" values="0.5;0.9;0.5" dur="3.5s" repeatCount="indefinite" begin="0.6s"/>
-              </circle>
-              <circle cx="240" cy="320" r="2.2" fill="#d32f2f" filter="url(#starGlow)">
-                <animate attributeName="opacity" values="0.4;0.8;0.4" dur="4s" repeatCount="indefinite" begin="1.2s"/>
-              </circle>
-              <circle cx="210" cy="315" r="2.8" fill="#c62828" filter="url(#starGlow)">
-                <animate attributeName="opacity" values="0.7;1;0.7" dur="2.2s" repeatCount="indefinite" begin="1.8s"/>
-              </circle>
-              
-              <path d="M 220,300 L 260,295 L 240,320 L 210,315 Z" stroke="rgba(239,83,80,0.4)" stroke-width="1" fill="none">
-                <animate attributeName="opacity" values="0.2;0.5;0.2" dur="4.5s" repeatCount="indefinite"/>
-              </path>
-            </g>
-            
-            <!-- Computer Vision Constellation -->
-            <g id="cv-constellation">
-              <text x="480" y="320" fill="rgba(255,255,255,0.8)" font-family="Arial" font-size="12" text-anchor="middle" filter="url(#textGlow)">Computer Vision</text>
-              
-              <circle cx="460" cy="340" r="2.6" fill="#26c6da" filter="url(#starGlow)">
-                <animate attributeName="opacity" values="0.5;0.9;0.5" dur="3s" repeatCount="indefinite"/>
-              </circle>
-              <circle cx="500" cy="335" r="2.4" fill="#00bcd4" filter="url(#starGlow)">
-                <animate attributeName="opacity" values="0.6;1;0.6" dur="2.7s" repeatCount="indefinite" begin="0.8s"/>
-              </circle>
-              <circle cx="480" cy="360" r="3" fill="#0097a7" filter="url(#starGlow)">
-                <animate attributeName="opacity" values="0.4;0.8;0.4" dur="3.8s" repeatCount="indefinite" begin="1.5s"/>
-              </circle>
-              
-              <path d="M 460,340 L 500,335 L 480,360 Z" stroke="rgba(38,198,218,0.4)" stroke-width="1" fill="none">
-                <animate attributeName="opacity" values="0.3;0.6;0.3" dur="5.5s" repeatCount="indefinite"/>
-              </path>
-            </g>
-            
-            <!-- Background stars -->
-            <circle cx="100" cy="50" r="1" fill="white" opacity="0.4">
-              <animate attributeName="opacity" values="0.2;0.6;0.2" dur="4s" repeatCount="indefinite"/>
-            </circle>
-            <circle cx="300" cy="80" r="0.8" fill="white" opacity="0.3">
-              <animate attributeName="opacity" values="0.1;0.5;0.1" dur="5s" repeatCount="indefinite"/>
-            </circle>
-            <circle cx="700" cy="120" r="1.2" fill="white" opacity="0.5">
-              <animate attributeName="opacity" values="0.3;0.7;0.3" dur="3.5s" repeatCount="indefinite"/>
-            </circle>
-            <circle cx="150" cy="350" r="0.9" fill="white" opacity="0.3">
-              <animate attributeName="opacity" values="0.1;0.4;0.1" dur="6s" repeatCount="indefinite"/>
-            </circle>
-            <circle cx="550" cy="50" r="1.1" fill="white" opacity="0.4">
-              <animate attributeName="opacity" values="0.2;0.6;0.2" dur="4.5s" repeatCount="indefinite"/>
-            </circle>
-            <circle cx="750" cy="350" r="0.7" fill="white" opacity="0.3">
-              <animate attributeName="opacity" values="0.1;0.5;0.1" dur="5.5s" repeatCount="indefinite"/>
-            </circle>
-            
-            <!-- Shooting star -->
-            <g>
-              <defs>
-                <linearGradient id="shootingStarGradient" x1="0%" y1="0%" x2="100%" y2="0%">
-                  <stop offset="0%" style="stop-color:rgba(255,255,255,0);stop-opacity:0" />
-                  <stop offset="100%" style="stop-color:#ffffff;stop-opacity:1" />
-                </linearGradient>
-              </defs>
-              
-              <line x1="0" y1="60" x2="60" y2="60" stroke="url(#shootingStarGradient)" stroke-width="2">
-                <animateTransform attributeName="transform" type="translate" 
-                  values="-100,0;900,0" dur="3s" repeatCount="indefinite"/>
-                <animate attributeName="opacity" values="0;1;1;0" dur="3s" repeatCount="indefinite"/>
-              </line>
-              
-              <circle cx="60" cy="60" r="2" fill="white">
-                <animateTransform attributeName="transform" type="translate" 
-                  values="-100,0;900,0" dur="3s" repeatCount="indefinite"/>
-                <animate attributeName="opacity" values="0;1;1;0" dur="3s" repeatCount="indefinite"/>
-              </circle>
-            </g>
-            
-            <!-- Title -->
-            <text x="400" y="30" text-anchor="middle" fill="white" font-family="Arial" font-size="20" font-weight="bold" filter="url(#textGlow)">
-              🌌 LILPANDA-BYTE - Constellation of Code 🚀
-            </text>
-            
-            <!-- Subtitle -->
-            <text x="400" y="385" text-anchor="middle" fill="rgba(255,255,255,0.7)" font-family="Arial" font-size="12">
-              Each constellation represents a mastered domain in the universe of technology
-            </text>
-          </svg>
-          EOF
-
-      - name: Deploy to GitHub Pages
-        uses: crazy-max/ghaction-github-pages@v3
-        with:
-          target_branch: output
-          build_dir: dist
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+              <path d="M 140,120 L 180,115 L
