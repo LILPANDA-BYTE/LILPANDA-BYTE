@@ -22,7 +22,7 @@ I'm a passionate **Machine Learning Engineer** with proven expertise in **Python
 Currently my research focuses on **automated LLM pipeline optimization**, **computer vision**, and **natural language processing**, with successful deployments in healthcare and financial sectors.
 
 ## 🎮 GitHub Activity
-
+  
 <img src="https://raw.githubusercontent.com/LILPANDA-BYTE/LILPANDA-BYTE/output/snake.svg" alt="Snake animation" />
 
 ## 🛰️ My Technology Arsenal
