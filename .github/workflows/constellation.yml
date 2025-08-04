@@ -1,0 +1,278 @@
+name: Generate Constellation Animation
+
+on:
+  schedule:
+    - cron: "0 */6 * * *"  # Every 6 hours
+  workflow_dispatch:
+  push:
+    branches: [ main ]
+
+jobs:
+  generate:
+    permissions:
+      contents: write
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          
+      - name: Generate GitHub Stats
+        run: |
+          mkdir -p dist
+          
+          # Create the constellation animation
+          cat > dist/constellation.html << 'EOF'
+          <!DOCTYPE html>
+          <html>
+          <head>
+              <title>Constellation GitHub Activity</title>
+              <style>
+                  body { margin: 0; background: #0a0a0a; font-family: Arial, sans-serif; }
+                  canvas { display: block; }
+                  .info { position: absolute; top: 20px; left: 20px; color: white; font-size: 18px; z-index: 10; }
+                  .legend { position: absolute; bottom: 20px; right: 20px; color: white; font-size: 12px; z-index: 10; }
+              </style>
+          </head>
+          <body>
+              <div class="info">
+                  <h2>🌟 NAFEW AZIM - Constellation of Code 🌟</h2>
+                  <p>Each star represents your contributions across the cosmos of development</p>
+              </div>
+              <div class="legend">
+                  <p>✨ Bright stars = High activity days<br>
+                  🌌 Constellations = Your project ecosystems<br>
+                  🚀 Shooting stars = Recent commits</p>
+              </div>
+              <canvas id="constellation"></canvas>
+              
+              <script>
+                  const canvas = document.getElementById('constellation');
+                  const ctx = canvas.getContext('2d');
+                  
+                  // Set canvas size
+                  canvas.width = window.innerWidth;
+                  canvas.height = window.innerHeight;
+                  
+                  // Star and constellation data
+                  const stars = [];
+                  const constellations = [];
+                  const shootingStars = [];
+                  
+                  // Create stars based on contribution pattern
+                  function createStars() {
+                      // Major constellations representing your key skills
+                      const skillConstellations = [
+                          { name: 'Machine Learning', x: canvas.width * 0.2, y: canvas.height * 0.3, size: 8 },
+                          { name: 'Deep Learning', x: canvas.width * 0.7, y: canvas.height * 0.2, size: 7 },
+                          { name: 'Data Science', x: canvas.width * 0.5, y: canvas.height * 0.5, size: 6 },
+                          { name: 'Python', x: canvas.width * 0.8, y: canvas.height * 0.6, size: 9 },
+                          { name: 'Neural Networks', x: canvas.width * 0.3, y: canvas.height * 0.7, size: 7 },
+                          { name: 'Computer Vision', x: canvas.width * 0.6, y: canvas.height * 0.8, size: 6 }
+                      ];
+                      
+                      skillConstellations.forEach((constellation, idx) => {
+                          // Create constellation pattern
+                          const starCount = constellation.size;
+                          const angle = (idx * Math.PI * 2) / skillConstellations.length;
+                          
+                          for (let i = 0; i < starCount; i++) {
+                              const starAngle = (i * Math.PI * 2) / starCount;
+                              const radius = 50 + Math.random() * 100;
+                              
+                              stars.push({
+                                  x: constellation.x + Math.cos(starAngle) * radius,
+                                  y: constellation.y + Math.sin(starAngle) * radius,
+                                  brightness: 0.3 + Math.random() * 0.7,
+                                  size: 1 + Math.random() * 3,
+                                  twinkle: Math.random() * Math.PI * 2,
+                                  constellation: constellation.name,
+                                  color: `hsl(${200 + idx * 40}, 80%, 70%)`
+                              });
+                          }
+                          
+                          constellations.push({
+                              name: constellation.name,
+                              x: constellation.x,
+                              y: constellation.y,
+                              alpha: 0.7
+                          });
+                      });
+                      
+                      // Add random background stars
+                      for (let i = 0; i < 200; i++) {
+                          stars.push({
+                              x: Math.random() * canvas.width,
+                              y: Math.random() * canvas.height,
+                              brightness: 0.1 + Math.random() * 0.4,
+                              size: 0.5 + Math.random() * 1.5,
+                              twinkle: Math.random() * Math.PI * 2,
+                              constellation: 'background',
+                              color: '#ffffff'
+                          });
+                      }
+                  }
+                  
+                  // Create shooting stars (recent activity)
+                  function createShootingStar() {
+                      shootingStars.push({
+                          x: -50,
+                          y: Math.random() * canvas.height,
+                          speed: 3 + Math.random() * 5,
+                          length: 20 + Math.random() * 80,
+                          alpha: 1,
+                          color: `hsl(${Math.random() * 360}, 100%, 80%)`
+                      });
+                  }
+                  
+                  // Animation loop
+                  function animate() {
+                      // Clear canvas with space background
+                      const gradient = ctx.createRadialGradient(canvas.width/2, canvas.height/2, 0, canvas.width/2, canvas.height/2, canvas.width);
+                      gradient.addColorStop(0, '#0a0a2e');
+                      gradient.addColorStop(0.5, '#16213e');
+                      gradient.addColorStop(1, '#0a0a0a');
+                      ctx.fillStyle = gradient;
+                      ctx.fillRect(0, 0, canvas.width, canvas.height);
+                      
+                      // Draw constellation lines
+                      ctx.strokeStyle = 'rgba(100, 150, 200, 0.3)';
+                      ctx.lineWidth = 1;
+                      constellations.forEach(constellation => {
+                          const constellationStars = stars.filter(star => star.constellation === constellation.name);
+                          ctx.beginPath();
+                          constellationStars.forEach((star, idx) => {
+                              if (idx === 0) {
+                                  ctx.moveTo(star.x, star.y);
+                              } else {
+                                  ctx.lineTo(star.x, star.y);
+                              }
+                          });
+                          ctx.stroke();
+                      });
+                      
+                      // Draw stars
+                      stars.forEach(star => {
+                          const twinkle = Math.sin(star.twinkle + Date.now() * 0.003) * 0.3 + 0.7;
+                          const alpha = star.brightness * twinkle;
+                          
+                          // Star glow
+                          const gradient = ctx.createRadialGradient(star.x, star.y, 0, star.x, star.y, star.size * 3);
+                          gradient.addColorStop(0, star.color.replace(')', `, ${alpha})`).replace('hsl', 'hsla'));
+                          gradient.addColorStop(1, star.color.replace(')', `, 0)`).replace('hsl', 'hsla'));
+                          
+                          ctx.fillStyle = gradient;
+                          ctx.beginPath();
+                          ctx.arc(star.x, star.y, star.size * 3, 0, Math.PI * 2);
+                          ctx.fill();
+                          
+                          // Star core
+                          ctx.fillStyle = star.color.replace(')', `, ${alpha})`).replace('hsl', 'hsla');
+                          ctx.beginPath();
+                          ctx.arc(star.x, star.y, star.size, 0, Math.PI * 2);
+                          ctx.fill();
+                          
+                          star.twinkle += 0.02;
+                      });
+                      
+                      // Draw constellation labels
+                      ctx.fillStyle = 'rgba(255, 255, 255, 0.8)';
+                      ctx.font = '14px Arial';
+                      ctx.textAlign = 'center';
+                      constellations.forEach(constellation => {
+                          ctx.fillText(constellation.name, constellation.x, constellation.y - 70);
+                      });
+                      
+                      // Draw and update shooting stars
+                      shootingStars.forEach((star, idx) => {
+                          // Draw trail
+                          const gradient = ctx.createLinearGradient(star.x - star.length, star.y, star.x, star.y);
+                          gradient.addColorStop(0, star.color.replace(')', `, 0)`).replace('hsl', 'hsla'));
+                          gradient.addColorStop(1, star.color.replace(')', `, ${star.alpha})`).replace('hsl', 'hsla'));
+                          
+                          ctx.strokeStyle = gradient;
+                          ctx.lineWidth = 2;
+                          ctx.beginPath();
+                          ctx.moveTo(star.x - star.length, star.y);
+                          ctx.lineTo(star.x, star.y);
+                          ctx.stroke();
+                          
+                          // Update position
+                          star.x += star.speed;
+                          star.alpha -= 0.01;
+                          
+                          // Remove if off screen or faded
+                          if (star.x > canvas.width + 100 || star.alpha <= 0) {
+                              shootingStars.splice(idx, 1);
+                          }
+                      });
+                      
+                      // Randomly create shooting stars
+                      if (Math.random() < 0.02) {
+                          createShootingStar();
+                      }
+                      
+                      requestAnimationFrame(animate);
+                  }
+                  
+                  // Handle window resize
+                  window.addEventListener('resize', () => {
+                      canvas.width = window.innerWidth;
+                      canvas.height = window.innerHeight;
+                      stars.length = 0;
+                      constellations.length = 0;
+                      createStars();
+                  });
+                  
+                  // Initialize
+                  createStars();
+                  animate();
+              </script>
+          </body>
+          </html>
+          EOF
+
+      - name: Create Static SVG Version
+        run: |
+          cat > dist/constellation-static.svg << 'EOF'
+          <svg width="800" height="400" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+              <radialGradient id="spaceGradient" cx="50%" cy="50%">
+                <stop offset="0%" style="stop-color:#0a0a2e;stop-opacity:1" />
+                <stop offset="50%" style="stop-color:#16213e;stop-opacity:1" />
+                <stop offset="100%" style="stop-color:#0a0a0a;stop-opacity:1" />
+              </radialGradient>
+              <filter id="starGlow">
+                <feGaussianBlur stdDeviation="2" result="coloredBlur"/>
+                <feMerge> 
+                  <feMergeNode in="coloredBlur"/>
+                  <feMergeNode in="SourceGraphic"/>
+                </feMerge>
+              </filter>
+              <filter id="textGlow">
+                <feGaussianBlur stdDeviation="1" result="coloredBlur"/>
+                <feMerge> 
+                  <feMergeNode in="coloredBlur"/>
+                  <feMergeNode in="SourceGraphic"/>
+                </feMerge>
+              </filter>
+            </defs>
+            
+            <!-- Space Background -->
+            <rect width="800" height="400" fill="url(#spaceGradient)"/>
+            
+            <!-- Machine Learning Constellation -->
+            <g id="ml-constellation">
+              <text x="160" y="100" fill="rgba(255,255,255,0.8)" font-family="Arial" font-size="12" text-anchor="middle" filter="url(#textGlow)">Machine Learning</text>
+              
+              <!-- ML Stars -->
+              <circle cx="140" cy="120" r="3" fill="#4fc3f7" filter="url(#starGlow)">
+                <animate attributeName="opacity" values="0.5;1;0.5" dur="3s" repeatCount="indefinite"/>
+              </circle>
+              <circle cx="180" cy="115" r="2.5" fill="#29b6f6" filter="url(#
