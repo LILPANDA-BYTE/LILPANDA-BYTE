@@ -107,7 +107,6 @@ Currently my research focuses on **automated LLM pipeline optimization**, **comp
 - 🏥 **Healthcare AI solutions** with real-world impact
 - 💰 **Financial ML models** for predictive analytics
 - 📖 **Research publications** in automated prompt engineering
-- 🎓 **Academic excellence** while pursuing CS degree
 
 ## 💡 Fun Facts
 
