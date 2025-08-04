@@ -275,4 +275,187 @@ jobs:
               <circle cx="140" cy="120" r="3" fill="#4fc3f7" filter="url(#starGlow)">
                 <animate attributeName="opacity" values="0.5;1;0.5" dur="3s" repeatCount="indefinite"/>
               </circle>
-              <circle cx="180" cy="115" r="2.5" fill="#29b6f6" filter="url(#
+              <circle cx="180" cy="115" r="2.5" fill="#29b6f6" filter="url(#starGlow)">
+                <animate attributeName="opacity" values="0.6;1;0.6" dur="2.5s" repeatCount="indefinite" begin="0.5s"/>
+              </circle>
+              <circle cx="160" cy="140" r="2" fill="#03a9f4" filter="url(#starGlow)">
+                <animate attributeName="opacity" values="0.4;0.9;0.4" dur="4s" repeatCount="indefinite" begin="1s"/>
+              </circle>
+              <circle cx="120" cy="135" r="2.8" fill="#0288d1" filter="url(#starGlow)">
+                <animate attributeName="opacity" values="0.7;1;0.7" dur="3.5s" repeatCount="indefinite" begin="1.5s"/>
+              </circle>
+              
+              <!-- Constellation lines -->
+              <path d="M 140,120 L 180,115 L 160,140 L 120,135 Z" stroke="rgba(79,195,247,0.4)" stroke-width="1" fill="none">
+                <animate attributeName="opacity" values="0.2;0.6;0.2" dur="5s" repeatCount="indefinite"/>
+              </path>
+            </g>
+            
+            <!-- Deep Learning Constellation -->
+            <g id="dl-constellation">
+              <text x="560" y="80" fill="rgba(255,255,255,0.8)" font-family="Arial" font-size="12" text-anchor="middle" filter="url(#textGlow)">Deep Learning</text>
+              
+              <circle cx="540" cy="100" r="3.5" fill="#ab47bc" filter="url(#starGlow)">
+                <animate attributeName="opacity" values="0.6;1;0.6" dur="2.8s" repeatCount="indefinite"/>
+              </circle>
+              <circle cx="580" cy="95" r="2.2" fill="#8e24aa" filter="url(#starGlow)">
+                <animate attributeName="opacity" values="0.5;0.9;0.5" dur="3.2s" repeatCount="indefinite" begin="0.8s"/>
+              </circle>
+              <circle cx="560" cy="120" r="2.6" fill="#7b1fa2" filter="url(#starGlow)">
+                <animate attributeName="opacity" values="0.4;1;0.4" dur="2.5s" repeatCount="indefinite" begin="1.2s"/>
+              </circle>
+              
+              <path d="M 540,100 L 580,95 L 560,120 Z" stroke="rgba(171,71,188,0.4)" stroke-width="1" fill="none">
+                <animate attributeName="opacity" values="0.3;0.7;0.3" dur="4s" repeatCount="indefinite"/>
+              </path>
+            </g>
+            
+            <!-- Data Science Constellation -->
+            <g id="ds-constellation">
+              <text x="400" y="180" fill="rgba(255,255,255,0.8)" font-family="Arial" font-size="12" text-anchor="middle" filter="url(#textGlow)">Data Science</text>
+              
+              <circle cx="380" cy="200" r="2.8" fill="#66bb6a" filter="url(#starGlow)">
+                <animate attributeName="opacity" values="0.5;1;0.5" dur="3.5s" repeatCount="indefinite"/>
+              </circle>
+              <circle cx="420" cy="195" r="3.2" fill="#43a047" filter="url(#starGlow)">
+                <animate attributeName="opacity" values="0.6;0.9;0.6" dur="2.2s" repeatCount="indefinite" begin="0.7s"/>
+              </circle>
+              <circle cx="400" cy="220" r="2.4" fill="#388e3c" filter="url(#starGlow)">
+                <animate attributeName="opacity" values="0.4;0.8;0.4" dur="4.2s" repeatCount="indefinite" begin="1.4s"/>
+              </circle>
+              <circle cx="390" cy="180" r="2" fill="#2e7d32" filter="url(#starGlow)">
+                <animate attributeName="opacity" values="0.3;0.7;0.3" dur="3.8s" repeatCount="indefinite" begin="2s"/>
+              </circle>
+              
+              <path d="M 380,200 L 420,195 L 400,220 L 390,180 Z" stroke="rgba(102,187,106,0.4)" stroke-width="1" fill="none">
+                <animate attributeName="opacity" values="0.2;0.5;0.2" dur="6s" repeatCount="indefinite"/>
+              </path>
+            </g>
+            
+            <!-- Python Constellation -->
+            <g id="python-constellation">
+              <text x="640" y="240" fill="rgba(255,255,255,0.8)" font-family="Arial" font-size="12" text-anchor="middle" filter="url(#textGlow)">Python</text>
+              
+              <circle cx="620" cy="260" r="3.8" fill="#ffa726" filter="url(#starGlow)">
+                <animate attributeName="opacity" values="0.7;1;0.7" dur="2.5s" repeatCount="indefinite"/>
+              </circle>
+              <circle cx="660" cy="255" r="3" fill="#ff9800" filter="url(#starGlow)">
+                <animate attributeName="opacity" values="0.5;0.9;0.5" dur="3s" repeatCount="indefinite" begin="0.5s"/>
+              </circle>
+              <circle cx="640" cy="280" r="2.5" fill="#f57c00" filter="url(#starGlow)">
+                <animate attributeName="opacity" values="0.6;0.8;0.6" dur="3.8s" repeatCount="indefinite" begin="1s"/>
+              </circle>
+              <circle cx="630" cy="240" r="2.2" fill="#ef6c00" filter="url(#starGlow)">
+                <animate attributeName="opacity" values="0.4;0.9;0.4" dur="2.8s" repeatCount="indefinite" begin="1.5s"/>
+              </circle>
+              <circle cx="650" cy="270" r="2.8" fill="#e65100" filter="url(#starGlow)">
+                <animate attributeName="opacity" values="0.5;1;0.5" dur="3.2s" repeatCount="indefinite" begin="2s"/>
+              </circle>
+              
+              <path d="M 620,260 L 660,255 L 650,270 L 640,280 L 630,240 Z" stroke="rgba(255,167,38,0.4)" stroke-width="1" fill="none">
+                <animate attributeName="opacity" values="0.3;0.6;0.3" dur="5s" repeatCount="indefinite"/>
+              </path>
+            </g>
+            
+            <!-- Neural Networks Constellation -->
+            <g id="nn-constellation">
+              <text x="240" y="280" fill="rgba(255,255,255,0.8)" font-family="Arial" font-size="12" text-anchor="middle" filter="url(#textGlow)">Neural Networks</text>
+              
+              <circle cx="220" cy="300" r="2.5" fill="#ef5350" filter="url(#starGlow)">
+                <animate attributeName="opacity" values="0.6;1;0.6" dur="2.8s" repeatCount="indefinite"/>
+              </circle>
+              <circle cx="260" cy="295" r="3" fill="#f44336" filter="url(#starGlow)">
+                <animate attributeName="opacity" values="0.5;0.9;0.5" dur="3.5s" repeatCount="indefinite" begin="0.6s"/>
+              </circle>
+              <circle cx="240" cy="320" r="2.2" fill="#d32f2f" filter="url(#starGlow)">
+                <animate attributeName="opacity" values="0.4;0.8;0.4" dur="4s" repeatCount="indefinite" begin="1.2s"/>
+              </circle>
+              <circle cx="210" cy="315" r="2.8" fill="#c62828" filter="url(#starGlow)">
+                <animate attributeName="opacity" values="0.7;1;0.7" dur="2.2s" repeatCount="indefinite" begin="1.8s"/>
+              </circle>
+              
+              <path d="M 220,300 L 260,295 L 240,320 L 210,315 Z" stroke="rgba(239,83,80,0.4)" stroke-width="1" fill="none">
+                <animate attributeName="opacity" values="0.2;0.5;0.2" dur="4.5s" repeatCount="indefinite"/>
+              </path>
+            </g>
+            
+            <!-- Computer Vision Constellation -->
+            <g id="cv-constellation">
+              <text x="480" y="320" fill="rgba(255,255,255,0.8)" font-family="Arial" font-size="12" text-anchor="middle" filter="url(#textGlow)">Computer Vision</text>
+              
+              <circle cx="460" cy="340" r="2.6" fill="#26c6da" filter="url(#starGlow)">
+                <animate attributeName="opacity" values="0.5;0.9;0.5" dur="3s" repeatCount="indefinite"/>
+              </circle>
+              <circle cx="500" cy="335" r="2.4" fill="#00bcd4" filter="url(#starGlow)">
+                <animate attributeName="opacity" values="0.6;1;0.6" dur="2.7s" repeatCount="indefinite" begin="0.8s"/>
+              </circle>
+              <circle cx="480" cy="360" r="3" fill="#0097a7" filter="url(#starGlow)">
+                <animate attributeName="opacity" values="0.4;0.8;0.4" dur="3.8s" repeatCount="indefinite" begin="1.5s"/>
+              </circle>
+              
+              <path d="M 460,340 L 500,335 L 480,360 Z" stroke="rgba(38,198,218,0.4)" stroke-width="1" fill="none">
+                <animate attributeName="opacity" values="0.3;0.6;0.3" dur="5.5s" repeatCount="indefinite"/>
+              </path>
+            </g>
+            
+            <!-- Background stars -->
+            <circle cx="100" cy="50" r="1" fill="white" opacity="0.4">
+              <animate attributeName="opacity" values="0.2;0.6;0.2" dur="4s" repeatCount="indefinite"/>
+            </circle>
+            <circle cx="300" cy="80" r="0.8" fill="white" opacity="0.3">
+              <animate attributeName="opacity" values="0.1;0.5;0.1" dur="5s" repeatCount="indefinite"/>
+            </circle>
+            <circle cx="700" cy="120" r="1.2" fill="white" opacity="0.5">
+              <animate attributeName="opacity" values="0.3;0.7;0.3" dur="3.5s" repeatCount="indefinite"/>
+            </circle>
+            <circle cx="150" cy="350" r="0.9" fill="white" opacity="0.3">
+              <animate attributeName="opacity" values="0.1;0.4;0.1" dur="6s" repeatCount="indefinite"/>
+            </circle>
+            <circle cx="550" cy="50" r="1.1" fill="white" opacity="0.4">
+              <animate attributeName="opacity" values="0.2;0.6;0.2" dur="4.5s" repeatCount="indefinite"/>
+            </circle>
+            <circle cx="750" cy="350" r="0.7" fill="white" opacity="0.3">
+              <animate attributeName="opacity" values="0.1;0.5;0.1" dur="5.5s" repeatCount="indefinite"/>
+            </circle>
+            
+            <!-- Shooting star -->
+            <g>
+              <defs>
+                <linearGradient id="shootingStarGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                  <stop offset="0%" style="stop-color:rgba(255,255,255,0);stop-opacity:0" />
+                  <stop offset="100%" style="stop-color:#ffffff;stop-opacity:1" />
+                </linearGradient>
+              </defs>
+              
+              <line x1="0" y1="60" x2="60" y2="60" stroke="url(#shootingStarGradient)" stroke-width="2">
+                <animateTransform attributeName="transform" type="translate" 
+                  values="-100,0;900,0" dur="3s" repeatCount="indefinite"/>
+                <animate attributeName="opacity" values="0;1;1;0" dur="3s" repeatCount="indefinite"/>
+              </line>
+              
+              <circle cx="60" cy="60" r="2" fill="white">
+                <animateTransform attributeName="transform" type="translate" 
+                  values="-100,0;900,0" dur="3s" repeatCount="indefinite"/>
+                <animate attributeName="opacity" values="0;1;1;0" dur="3s" repeatCount="indefinite"/>
+              </circle>
+            </g>
+            
+            <!-- Title -->
+            <text x="400" y="30" text-anchor="middle" fill="white" font-family="Arial" font-size="20" font-weight="bold" filter="url(#textGlow)">
+              🌌 NAFEW AZIM - Constellation of Code 🚀
+            </text>
+            
+            <!-- Subtitle -->
+            <text x="400" y="385" text-anchor="middle" fill="rgba(255,255,255,0.7)" font-family="Arial" font-size="12">
+              Each constellation represents a mastered domain in the universe of technology
+            </text>
+          </svg>
+          EOF
+
+      - name: Deploy to GitHub Pages
+        uses: crazy-max/ghaction-github-pages@v3
+        with:
+          target_branch: output
+          build_dir: dist
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
