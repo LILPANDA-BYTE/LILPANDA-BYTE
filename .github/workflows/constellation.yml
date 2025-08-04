@@ -42,7 +42,7 @@ jobs:
           </head>
           <body>
               <div class="info">
-                  <h2>🌟 NAFEW AZIM - Constellation of Code 🌟</h2>
+                  <h2>🌟 LILPANDA-BYTE - Constellation of Code 🌟</h2>
                   <p>Each star represents your contributions across the cosmos of development</p>
               </div>
               <div class="legend">
@@ -442,7 +442,7 @@ jobs:
             
             <!-- Title -->
             <text x="400" y="30" text-anchor="middle" fill="white" font-family="Arial" font-size="20" font-weight="bold" filter="url(#textGlow)">
-              🌌 NAFEW AZIM - Constellation of Code 🚀
+              🌌 LILPANDA-BYTE - Constellation of Code 🚀
             </text>
             
             <!-- Subtitle -->
