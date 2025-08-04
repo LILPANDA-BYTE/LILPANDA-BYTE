@@ -7,7 +7,8 @@
   *Developing innovative ML solutions for healthcare and financial sectors*
   
   📍 Dhaka, Bangladesh | 📧 nafewazim101@gmail.com
-  
+
+</div>
   <img src="https://visitor-badge.laobi.icu/badge?page_id=NAFEW-AZIM.NAFEW-AZIM&" alt="Profile views" />
 </div>
 
